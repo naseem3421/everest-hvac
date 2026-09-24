@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 160" width="100%" height="100%">
+  <rect width="100%" height="100%" fill="#0F172A"/>
+  <g transform="translate(35, 30)">
+    <circle cx="42" cy="40" r="30" fill="none" stroke="#38BDF8" stroke-width="3" stroke-dasharray="6,4"/>
+    <circle cx="42" cy="40" r="14" fill="#38BDF8"/>
+    <text x="92" y="43" font-family="'Plus Jakarta Sans', Inter, sans-serif" font-weight="900" font-size="25" fill="#FFFFFF" letter-spacing="0.5">GLOBAL SOFTWARE</text>
+    <text x="93" y="69" font-family="'Plus Jakarta Sans', Inter, sans-serif" font-weight="700" font-size="12" fill="#38BDF8" letter-spacing="3">TECHNOLOGY &amp; CLOUD HUB</text>
+  </g>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 160" width="100%" height="100%">
+  <rect width="100%" height="100%" fill="#78350F"/>
+  <g transform="translate(35, 30)">
+    <path d="M20 50 Q42 16 64 50 L60 66 L24 66 Z" fill="#FCD34D"/>
+    <circle cx="42" cy="38" r="6" fill="#B45309"/>
+    <text x="88" y="43" font-family="'Plus Jakarta Sans', Inter, sans-serif" font-weight="900" font-size="26" fill="#FFFFFF" letter-spacing="1">EVEREST BAKERY</text>
+    <text x="90" y="68" font-family="'Plus Jakarta Sans', Inter, sans-serif" font-weight="600" font-size="12" fill="#FDE68A" letter-spacing="2.5">6 SITES NETWORK · CHENNAI</text>
+  </g>
+</svg>
