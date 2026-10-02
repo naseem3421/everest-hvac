@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "feedback:dev": "npm --prefix everest-feedback run dev",
+    "feedback:build": "npm --prefix everest-feedback run build",
+    "feedback:start": "npm --prefix everest-feedback run start"
   },
   "dependencies": {
     "react": "^18.2.0",
