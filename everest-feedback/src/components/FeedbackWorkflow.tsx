@@ -9,6 +9,10 @@ import {
 } from "../lib/constants";
 import { FeedbackFormData } from "../types/feedback";
 import {
+  generateFeedbackWithOriginalityCheck,
+  FeedbackDraftItem,
+} from "../lib/feedbackSynthesizer";
+import {
   Check,
   Copy,
   ExternalLink,
@@ -132,7 +136,7 @@ export default function FeedbackWorkflow({ sessionSignature }: FeedbackWorkflowP
     });
   };
 
-  // Generate Review using server-side /api/generate-feedback
+  // Generate Review using client-side synthesis engine (zero server dependency & 100% free)
   const handleGenerateReview = async () => {
     setStepError("");
 
@@ -147,27 +151,18 @@ export default function FeedbackWorkflow({ sessionSignature }: FeedbackWorkflowP
     setIsGenerating(true);
 
     try {
-      const response = await fetch("/api/generate-feedback", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(sessionSignature ? { "x-feedback-session": sessionSignature } : {}),
-        },
-        body: JSON.stringify(formData),
-      });
+      // Natural brief transition delay for clean UI spinner presentation
+      await new Promise((resolve) => setTimeout(resolve, 400));
 
-      const data = await response.json();
+      // Synthesize 3 distinct drafts with built-in originality & Indian English tuning
+      const result = await generateFeedbackWithOriginalityCheck(formData, 3);
 
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to create feedback drafts. Please retry.");
-      }
-
-      if (!data.drafts || !Array.isArray(data.drafts) || data.drafts.length === 0) {
-        throw new Error("No feedback drafts returned from the server. Please retry.");
+      if (!result.drafts || !Array.isArray(result.drafts) || result.drafts.length === 0) {
+        throw new Error("Unable to create feedback drafts. Please review your selections and try again.");
       }
 
       // Convert into editable card state
-      const initialCards: EditableDraftState[] = data.drafts.map((d: APIDraftItem) => ({
+      const initialCards: EditableDraftState[] = result.drafts.map((d: FeedbackDraftItem) => ({
         style: d.style,
         text: d.text,
         isEditing: false,

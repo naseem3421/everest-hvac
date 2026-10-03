@@ -1,6 +1,3 @@
-import fs from "node:fs";
-import path from "node:path";
-
 interface ReviewRecord {
   id: string;
   text: string;
@@ -12,24 +9,23 @@ let memoryCache: ReviewRecord[] = [];
 let isInitialized = false;
 
 const MAX_HISTORY_ITEMS = 150;
-const STORAGE_DIR = path.join(process.cwd(), ".data");
-const STORAGE_FILE = path.join(STORAGE_DIR, "review-history.json");
+const STORAGE_KEY = "everest_feedback_review_history";
 
 /**
- * Initializes the history cache from disk if available
+ * Initializes the history cache from localStorage if available (client-side)
+ * or in-memory array (server/SSR).
  */
 function initStorage() {
   if (isInitialized) return;
   try {
-    if (!fs.existsSync(STORAGE_DIR)) {
-      fs.mkdirSync(STORAGE_DIR, { recursive: true });
-    }
-    if (fs.existsSync(STORAGE_FILE)) {
-      const data = fs.readFileSync(STORAGE_FILE, "utf-8");
-      memoryCache = JSON.parse(data) || [];
+    if (typeof window !== "undefined" && window.localStorage) {
+      const data = localStorage.getItem(STORAGE_KEY);
+      if (data) {
+        memoryCache = JSON.parse(data) || [];
+      }
     }
   } catch (err) {
-    console.warn("Could not read review history file, using in-memory store:", err);
+    console.warn("Could not read review history from localStorage, using in-memory store:", err);
     memoryCache = [];
   }
   isInitialized = true;
@@ -61,14 +57,12 @@ export async function saveGeneratedReviews(texts: string[]): Promise<void> {
   // Prepend newest records and cap to MAX_HISTORY_ITEMS
   memoryCache = [...newRecords, ...memoryCache].slice(0, MAX_HISTORY_ITEMS);
 
-  // Asynchronously persist to file
   try {
-    if (!fs.existsSync(STORAGE_DIR)) {
-      fs.mkdirSync(STORAGE_DIR, { recursive: true });
+    if (typeof window !== "undefined" && window.localStorage) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(memoryCache));
     }
-    fs.writeFileSync(STORAGE_FILE, JSON.stringify(memoryCache, null, 2), "utf-8");
   } catch (err) {
-    console.warn("Failed to persist review history to disk:", err);
+    console.warn("Failed to persist review history to localStorage:", err);
   }
 }
 
@@ -78,10 +72,11 @@ export async function saveGeneratedReviews(texts: string[]): Promise<void> {
 export function clearReviewHistory(): void {
   memoryCache = [];
   try {
-    if (fs.existsSync(STORAGE_FILE)) {
-      fs.unlinkSync(STORAGE_FILE);
+    if (typeof window !== "undefined" && window.localStorage) {
+      localStorage.removeItem(STORAGE_KEY);
     }
   } catch (err) {
-    console.warn("Failed to delete review history file:", err);
+    console.warn("Failed to clear review history from localStorage:", err);
   }
 }
+
